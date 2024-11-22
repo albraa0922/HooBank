@@ -1,9 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logo, close, menu } from "../assets";
 import { navLinks } from "../constants";
 
 const Navbar = () => {
   const [toggel, setToggel] = useState(false);
+
+  useEffect(() => {
+    const handleClick = (event) => {
+      if (!event.target.closest(".sidebar") || !event.target.closest("img")) {
+        setToggel(false);
+      }
+    };
+    document.addEventListener("click", handleClick);
+    return () => {
+      document.removeEventListener("click", handleClick);
+    };
+  }, []);
 
   return (
     <nav className="w-full flex justify-between items-center py-6">
@@ -15,7 +27,7 @@ const Navbar = () => {
             className={`font-poppins font-normal cursor-pointer text-[16px] text-white
              ${index === navLinks.length - 1 ? "mr-0 " : "mr-10"} `}
           >
-            <a href={`${nav.id}`}>{nav.title}</a>
+            <a href={`#${nav.id}`}>{nav.title}</a>
           </li>
         ))}
       </ul>
@@ -25,7 +37,10 @@ const Navbar = () => {
           className="w-[28px] h-[28px] object-contain"
           src={toggel ? close : menu}
           alt="menu"
-          onClick={() => setToggel((prev) => !prev)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setToggel(!toggel);
+          }}
         />
         <div
           className={`${
@@ -39,7 +54,7 @@ const Navbar = () => {
                 className={`font-poppins font-normal cursor-pointer text-[16px] text-white
              ${index === navLinks.length - 1 ? "" : "pb-4"} `}
               >
-                <a href={`${nav.id}`}>{nav.title}</a>
+                <a href={`#${nav.id}`}>{nav.title}</a>
               </li>
             ))}
           </ul>
